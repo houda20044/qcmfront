@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Créer un QCM</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="navbar">
+    <div class="container">
+      <div class="logo">QCM+</div>
+      <nav>
+        <a href="dashboard-professeur.html">Dashboard</a>
+        <a href="index.html">Déconnexion</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="hero">
+    <div class="card">
+      <h2>Créer un QCM</h2>
+
+      <!-- Formulaire configuration initiale -->
+      <form id="qcmConfigForm">
+        <input type="text" id="titre" placeholder="Titre du QCM" required>
+        <input type="number" id="nombreQuestions" placeholder="Nombre de questions" min="1" required>
+        <button type="submit" class="btn primary">Commencer</button>
+      </form>
+
+      <!-- Formulaire création des questions -->
+      <form id="qcmQuestionsForm" style="display: none;">
+        <label for="qcmDuration">Durée du QCM (en minutes) :</label>
+        <input type="number" id="qcmDuration" name="duration" min="1" max="120" required />
+
+        <label for="niveau">Niveau :</label>
+        <select id="niveau" name="niveau" required>
+          <option value="L1">L1</option>
+          <option value="L2">L2</option>
+          <option value="L3">L3</option>
+          <option value="M1">M1</option>
+          <option value="M2">M2</option>
+        </select>
+
+        <div id="questionsContainer"></div>
+
+        <button type="submit" class="btn primary">Enregistrer le QCM</button>
+      </form>
+    </div>
+  </main>
+
+  <script src="js/create_qcm.js"></script>
+</body>
+</html>

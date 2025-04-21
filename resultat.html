@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Résultats du QCM</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <header class="navbar">
+    <div class="container">
+      <div class="logo">QCM+</div>
+      <nav>
+        <a href="index.html">Accueil</a>
+        <a href="dashboard.html">Dashboard</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="card">
+        <h2>Résultats</h2>
+        <p id="scoreText"></p>
+        <p id="feedbackText"></p>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    &copy; 2025 QCM+ — Tous droits réservés
+  </footer>
+
+  <script>
+    // Exemples de feedbacks et scores
+    const score = 80; // Score obtenu par l'utilisateur
+    const feedback = score >= 70 ? "Bien joué ! Continuez comme ça !" : "Il reste encore des progrès à faire.";
+    
+    document.getElementById("scoreText").innerText = `Votre score : ${score}%`;
+    document.getElementById("feedbackText").innerText = feedback;
+  </script>
+
+</body>
+</html>

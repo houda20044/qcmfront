@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard Professeur - QCM+</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <header class="navbar">
+    <div class="container">
+      <div class="logo">QCM+</div>
+      <nav>
+        <a href="index.html">Accueil</a>
+        <a href="historique.html">Historique</a>
+        <a href="login.html">Déconnexion</a>
+      </nav>
+      
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="card">
+        <h2>Bienvenue, Professeur !</h2>
+        <p>Utilisez le bouton ci-dessous pour créer un nouveau QCM pour vos étudiants.</p>
+        <a href="create_qcm.html" class="btn primary">Créer un QCM</a>
+
+        
+        
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    &copy; 2025 QCM+ — Tous droits réservés
+  </footer>
+
+  <script>
+    const historique = JSON.parse(localStorage.getItem("historiqueQCM")) || [];
+    const tbody = document.querySelector("#historiqueTable tbody");
+
+    historique.forEach(entry => {
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td>${entry.nom}</td>
+        <td>${entry.note} / 20</td>
+        <td>${entry.date}</td>
+      `;
+      tbody.appendChild(tr);
+    });
+  </script>
+</body>
+</html>
