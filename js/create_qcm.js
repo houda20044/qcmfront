@@ -1,72 +1,94 @@
-document.getElementById("qcmConfigForm").addEventListener("submit", function(e) {
-    e.preventDefault();
+document.addEventListener("DOMContentLoaded", function () {
+    const configForm = document.getElementById("qcmConfigForm");
+    const questionsForm = document.getElementById("qcmQuestionsForm");
+    const questionsContainer = document.getElementById("questionsContainer");
   
-    const titre = document.getElementById("titre").value;
-    const nombreQuestions = parseInt(document.getElementById("nombreQuestions").value);
+    let nombreQuestions = 0;
   
-    const container = document.getElementById("questionsContainer");
-    container.innerHTML = ""; // Reset
+    configForm.addEventListener("submit", function (e) {
+      e.preventDefault();
   
-    for (let i = 1; i <= nombreQuestions; i++) {
-      container.innerHTML += `
-        <div class="question-block">
-          <h3>Question ${i}</h3>
-          <textarea placeholder="Énoncé de la question" required></textarea>
-          <input type="text" placeholder="Choix A" required>
-          <input type="text" placeholder="Choix B" required>
-          <input type="text" placeholder="Choix C" required>
-          <input type="text" placeholder="Choix D" required>
-          <select required>
-            <option value="">Bonne réponse</option>
-            <option value="A">Choix A</option>
-            <option value="B">Choix B</option>
-            <option value="C">Choix C</option>
-            <option value="D">Choix D</option>
+      const titre = document.getElementById("titre").value.trim();
+      nombreQuestions = parseInt(document.getElementById("nombreQuestions").value);
+  
+      if (!titre || isNaN(nombreQuestions) || nombreQuestions <= 0) {
+        alert("Veuillez remplir tous les champs correctement.");
+        return;
+      }
+  
+      configForm.style.display = "none";
+      questionsForm.style.display = "block";
+  
+      questionsContainer.innerHTML = ""; // Réinitialiser
+  
+      for (let i = 1; i <= nombreQuestions; i++) {
+        const questionDiv = document.createElement("div");
+        questionDiv.classList.add("question-block");
+  
+        questionDiv.innerHTML = `
+          <h4>Question ${i}</h4>
+          <input type="text" name="question${i}" placeholder="Texte de la question" required><br>
+          <input type="text" name="choix${i}_1" placeholder="Choix 1" required>
+          <input type="text" name="choix${i}_2" placeholder="Choix 2" required>
+          <input type="text" name="choix${i}_3" placeholder="Choix 3" required>
+          <input type="text" name="choix${i}_4" placeholder="Choix 4" required><br>
+          <label>Bonne réponse :</label>
+          <select name="bonneReponse${i}" required>
+            <option value="">--Choisir--</option>
+            <option value="1">Choix 1</option>
+            <option value="2">Choix 2</option>
+            <option value="3">Choix 3</option>
+            <option value="4">Choix 4</option>
           </select>
           <hr>
-        </div>
-      `;
-    }
+        `;
   
-    // Cacher config, afficher questions
-    document.getElementById("qcmConfigForm").style.display = "none";
-    document.getElementById("qcmQuestionsForm").style.display = "block";
-  
-    // Enregistrer titre globalement
-    document.getElementById("qcmQuestionsForm").dataset.titre = titre;
-  });
-  
-  document.getElementById("qcmQuestionsForm").addEventListener("submit", function(e) {
-    e.preventDefault();
-  
-    const titre = e.target.dataset.titre;
-    const blocks = document.querySelectorAll(".question-block");
-  
-    const questions = Array.from(blocks).map(block => {
-      const inputs = block.querySelectorAll("input, textarea, select");
-  
-      return {
-        question: inputs[0].value,
-        choix: {
-          A: inputs[1].value,
-          B: inputs[2].value,
-          C: inputs[3].value,
-          D: inputs[4].value
-        },
-        bonneReponse: inputs[5].value
-      };
+        questionsContainer.appendChild(questionDiv);
+      }
     });
   
-    const qcm = {
-      titre,
-      questions
-    };
+    questionsForm.addEventListener("submit", function (e) {
+      e.preventDefault();
   
-    let qcms = JSON.parse(localStorage.getItem("qcms")) || [];
-    qcms.push(qcm);
-    localStorage.setItem("qcms", JSON.stringify(qcms));
+      const titre = document.getElementById("titre").value.trim();
+      const duration = document.getElementById("qcmDuration").value;
+      const niveau = document.getElementById("niveau").value;
   
-    alert("QCM enregistré avec succès !");
-    window.location.href = "dashboard-professeur.html";
+      const questions = [];
+  
+      for (let i = 1; i <= nombreQuestions; i++) {
+        const questionText = document.querySelector(`input[name="question${i}"]`).value.trim();
+        const choix1 = document.querySelector(`input[name="choix${i}_1"]`).value.trim();
+        const choix2 = document.querySelector(`input[name="choix${i}_2"]`).value.trim();
+        const choix3 = document.querySelector(`input[name="choix${i}_3"]`).value.trim();
+        const choix4 = document.querySelector(`input[name="choix${i}_4"]`).value.trim();
+        const bonneReponse = document.querySelector(`select[name="bonneReponse${i}"]`).value;
+  
+        if (!questionText || !choix1 || !choix2 || !choix3 || !choix4 || !bonneReponse) {
+          alert(`Veuillez remplir tous les champs pour la question ${i}`);
+          return;
+        }
+  
+        questions.push({
+          question: questionText,
+          choix: [choix1, choix2, choix3, choix4],
+          bonneReponse: parseInt(bonneReponse)
+        });
+      }
+  
+      // Données du QCM complet
+      const qcm = {
+        titre,
+        niveau,
+        duration,
+        questions
+      };
+  
+      console.log("QCM enregistré :", qcm);
+  
+      // Tu peux ici faire un envoi vers un backend via fetch() si besoin
+      alert("QCM enregistré avec succès !");
+      window.location.href = "dashboard-professeur.html";
+    });
   });
   

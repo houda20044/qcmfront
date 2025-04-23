@@ -1,31 +1,40 @@
 document.getElementById("loginForm").addEventListener("submit", function (e) {
-    e.preventDefault();
+  e.preventDefault();
+
+  // Récupération des valeurs du formulaire
+  const email = e.target.querySelector("input[type='email']").value;
+  const password = e.target.querySelector("input[type='password']").value;
+
   
-    // Récupération des valeurs du formulaire
-    const email = e.target.querySelector("input[type='email']").value;
-    const password = e.target.querySelector("input[type='password']").value;
-  
-    // Simuler la récupération de l'utilisateur depuis le stockage local
-    const users = JSON.parse(localStorage.getItem("users")) || [];
-  
-    const user = users.find(u => u.email === email && u.password === password);
-  
-    if (user) {
+  fetch('http://localhost:8082/api/users/login', { 
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ email, password }) 
+  })
+  .then(response => response.json())
+  .then(data => {
+    if (data.success) {
       alert("Connexion réussie !");
+      console.log("Role reçu :", data.user.role);
       
-      
-      localStorage.setItem("loggedInUser", JSON.stringify(user));
-  
-      // Redirection selon le rôle
-      if (user.role === "etudiant") {
-        window.location.href = "dashboard-etudient.html"; // Étudiant
-      } else if (user.role === "professeur") {
-        window.location.href = "dashboard-professeur.html"; // Prof
+      localStorage.setItem("loggedInUser", JSON.stringify(data.user));
+
+      // Redirection en fonction du rôle
+      if (data.user.role === "STUDENT") {  
+        window.location.href = "dashboard-etudiant.html"; 
+      } else if (data.user.role === "MENTOR") {  // Assure-toi que les rôles sont bien définis
+        window.location.href = "dashboard-professeur.html"; // Professeur
       } else {
         alert("Rôle inconnu !");
       }
     } else {
       alert("Email ou mot de passe incorrect.");
     }
+  })
+  .catch(error => {
+    console.error("Erreur lors de la connexion:", error);
+    alert("Une erreur est survenue.");
   });
-  
+});
