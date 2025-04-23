@@ -53,6 +53,7 @@ document.addEventListener("DOMContentLoaded", function () {
       const titre = document.getElementById("titre").value.trim();
       const duration = document.getElementById("qcmDuration").value;
       const niveau = document.getElementById("niveau").value;
+      const examId = document.getElementById("examId").value; // Récupérer l'examId
   
       const questions = [];
   
@@ -70,7 +71,8 @@ document.addEventListener("DOMContentLoaded", function () {
         }
   
         questions.push({
-          question: questionText,
+          examId: examId, // Ajouter l'examId à chaque question
+          text: questionText,
           choix: [choix1, choix2, choix3, choix4],
           bonneReponse: parseInt(bonneReponse)
         });
@@ -86,9 +88,24 @@ document.addEventListener("DOMContentLoaded", function () {
   
       console.log("QCM enregistré :", qcm);
   
-      // Tu peux ici faire un envoi vers un backend via fetch() si besoin
-      alert("QCM enregistré avec succès !");
-      window.location.href = "dashboard-professeur.html";
+      // Envoi vers le backend via fetch() (Exemple)
+      fetch('http://localhost:8082/api/questions/create', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(qcm)
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.status === 500) {
+          alert("Erreur serveur. Veuillez réessayer.");
+        } else {
+          alert("QCM enregistré avec succès !");
+          window.location.href = "dashboard-professeur.html";
+        }
+      })
+      .catch(error => console.error("Erreur lors de l'envoi des données:", error));
     });
   });
   

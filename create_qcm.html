@@ -24,6 +24,7 @@
       <form id="qcmConfigForm">
         <input type="text" id="titre" placeholder="Titre du QCM" required>
         <input type="number" id="nombreQuestions" placeholder="Nombre de questions" min="1" required>
+        <input type="number" id="examId" placeholder="ID de l'examen" required>
         <button type="submit" class="btn primary">Commencer</button>
       </form>
 
@@ -40,6 +41,9 @@
           <option value="M1">M1</option>
           <option value="M2">M2</option>
         </select>
+
+        <!-- Champ caché pour l'ID de l'examen -->
+        <input type="hidden" id="examId" value="4">
 
         <div id="questionsContainer"></div>
 
