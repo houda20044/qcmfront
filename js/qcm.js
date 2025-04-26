@@ -26,7 +26,7 @@ async function apiFetch(url, options = {}) {
 // Fonction pour charger les examens disponibles
 async function loadExams() {
     try {
-        const exams = await apiFetch('http://localhost:8082/api/exams/all');
+        const exams = await apiFetch('http://localhost:8082/api/exams/exams');
         const selectExam = document.getElementById('examSelect');
         exams.forEach(exam => {
             const option = document.createElement('option');

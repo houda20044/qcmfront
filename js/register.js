@@ -44,7 +44,7 @@ document.getElementById("registerForm").addEventListener("submit", function (e) 
         // Si la réponse est un message texte (par exemple "Utilisateur créé avec succès !")
         if (typeof data === "string" && data.includes("Utilisateur créé avec succès !")) {
             alert(data); // Affiche le message de succès
-            window.location.href = "../login.html"; 
+            window.location.href = "./login.html"; 
         } else if (data && data.message) {
             alert("Erreur : " + data.message); // Affiche une erreur si elle est dans le format JSON
         } else {

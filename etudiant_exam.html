@@ -1,0 +1,45 @@
+<!-- src/main/resources/static/etudiant_exam.html -->
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Passer un examen</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="navbar">
+    <div class="container">
+      <div class="logo">QCM+</div>
+      <nav>
+        <a href="dashboard.html">Dashboard</a>
+        <a href="index.html">Déconnexion</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="hero">
+    <div class="card">
+      <h2>Passer un examen</h2>
+
+      <!-- Sélection exam + démarrer -->
+      <form id="startForm">
+        <label for="examSelect">Examen :</label>
+        <select id="examSelect" required>
+          <option value="">-- Sélectionner --</option>
+        </select>
+        <button type="submit" class="btn primary">Commencer</button>
+      </form>
+
+      <!-- Questions & choix -->
+      <form id="examForm" style="display:none;">
+        <div id="questionsContainer"></div>
+        <button type="submit" class="btn primary">
+          Soumettre mes réponses
+        </button>
+      </form>
+    </div>
+  </main>
+
+  <script src="js/take_exam.js"></script>
+</body>
+</html>
