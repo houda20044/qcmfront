@@ -71,7 +71,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
       }
       alert('Vos réponses ont bien été enregistrées !');
-      // you could redirect or show score here
+      // you could redirect or show score here ....
     });
   });
   
