@@ -17,7 +17,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // 1) Fetch exams
     // ——————————————
     const examSelect = document.getElementById('examSelect');
-    fetch('/api/exams/all')
+    fetch('http://localhost:8082/api/exams/exams')
       .then(r => r.json())
       .then(exams => {
         exams.forEach(e => {
@@ -90,7 +90,7 @@ document.addEventListener('DOMContentLoaded', () => {
         for (let i = 1; i <= container.children.length; i++) {
           // 3.1) create question
           const text = document.getElementById(`questionText-${i}`).value.trim();
-          let resQ = await fetch('/api/questions/create', {
+          let resQ = await fetch('http://localhost:8082/api/questions/create', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -108,7 +108,7 @@ document.addEventListener('DOMContentLoaded', () => {
           for (let j = 1; j <= 4; j++) {
             const choiceText = document.getElementById(`choice-${i}-${j}`).value.trim();
             const isCorrect  = (parseInt(correctIndex, 10) === j);
-            let resC = await fetch('/api/choices/create', {
+            let resC = await fetch('http://localhost:8082/api/choices/create', {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({ questionId, text: choiceText, isCorrect })
