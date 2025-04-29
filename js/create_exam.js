@@ -1,12 +1,24 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const form = document.getElementById('examForm');
+    // 1) Guard: ensure user is logged in and is a MENTOR
+    const raw = localStorage.getItem('loggedInUser');
+    if (!raw) {
+      alert('Veuillez vous connecter.');
+      return window.location.href = 'index.html';
+    }
+    const user = JSON.parse(raw);
+    if (user.role !== 'MENTOR') {
+      alert('Accès réservé aux enseignants.');
+      return window.location.href = 'index.html';
+    }
   
+    // 2) Hook the form
+    const form = document.getElementById('examForm');
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
   
-      const title       = examTitle.value.trim();
-      const description = examDescription.value.trim();
-      const createdBy   = 1;
+      const title       = document.getElementById('examTitle').value.trim();
+      const description = document.getElementById('examDescription').value.trim();
+      const createdBy   = user.userId;  // from localStorage
   
       try {
         const res = await fetch('http://localhost:8082/api/exams/create', {

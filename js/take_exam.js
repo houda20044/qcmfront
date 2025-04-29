@@ -1,10 +1,22 @@
-// src/main/resources/static/js/take_exam.js
 document.addEventListener('DOMContentLoaded', () => {
+    const raw  = localStorage.getItem('loggedInUser');
+    if (!raw) {
+      alert('Veuillez vous connecter.');
+      return window.location.href = 'index.html';
+    }
+    const user = JSON.parse(raw);
+    if (user.role !== 'STUDENT') {
+      alert('Accès réservé aux étudiants.');
+      return window.location.href = 'index.html';
+    }
+    const studentId = user.userId;
+  
     const startForm        = document.getElementById('startForm');
     const examForm         = document.getElementById('examForm');
     const examSelect       = document.getElementById('examSelect');
     const questionsContainer = document.getElementById('questionsContainer');
-    let currentExamId, attemptId, studentId = 1; // replace with real userId
+    const scoreContainer   = document.getElementById('scoreContainer');
+    let currentExamId, attemptId;
   
     // 1) load exams
     fetch('http://localhost:8082/api/exams/exams')
@@ -54,24 +66,40 @@ document.addEventListener('DOMContentLoaded', () => {
       examForm.style.display  = 'block';
     });
   
-    // 3) submit responses
-    examForm.addEventListener('submit', async e => {
-      e.preventDefault();
-      const inputs = examForm.querySelectorAll('input[type="radio"]:checked');
-      for (let inp of inputs) {
-        const [ , qid ] = inp.name.match(/^q(\d+)$/);
-        await fetch('http://localhost:8082/api/responses/create', {
-          method: 'POST',
-          headers: { 'Content-Type':'application/json' },
-          body: JSON.stringify({
-            attemptId,
-            questionId: +qid,
-            choiceId: +inp.value
-          })
-        });
-      }
-      alert('Vos réponses ont bien été enregistrées !');
-      // you could redirect or show score here ....
-    });
+      // 3) submit responses & get score
+  examForm.addEventListener('submit', async e => {
+    e.preventDefault();
+
+  // disable the submit button immediately
+   const submitBtn = examForm.querySelector('button[type="submit"]');
+   submitBtn.disabled = true;
+   submitBtn.textContent = 'Envoi en cours…';
+
+    const inputs = examForm.querySelectorAll('input[type="radio"]:checked');
+    for (let inp of inputs) {
+      const [ , qid ] = inp.name.match(/^q(\d+)$/);
+      await fetch('http://localhost:8082/api/responses/create', {
+        method: 'POST',
+        headers: { 'Content-Type':'application/json' },
+        body: JSON.stringify({
+          attemptId,
+          questionId: +qid,
+          choiceId: +inp.value
+        })
+      });
+    }
+
+    // Fetch the note sur 20
+    const scoreRes = await fetch(`http://localhost:8082/api/attempts/${attemptId}/score`);
+    const scoreData = await scoreRes.json();
+    scoreContainer.innerHTML = `
+      <h3>Votre note : ${scoreData.score.toFixed(2)} / 20</h3>
+      <p>(${scoreData.correct} bonnes réponses sur ${scoreData.total})</p>
+    `;
+
+   // prevent any further clicks
+   submitBtn.textContent = 'Réponses soumises';
+  });
+
   });
   

@@ -1,31 +1,45 @@
 document.addEventListener('DOMContentLoaded', () => {
+    // ——————————————
+    // 0) Client-side guard
+    // ——————————————
+    const raw = localStorage.getItem('loggedInUser');
+    if (!raw) {
+      alert('Veuillez vous connecter.');
+      return window.location.href = 'index.html';
+    }
+    const user = JSON.parse(raw);
+    if (user.role !== 'MENTOR') {
+      alert('Accès réservé aux enseignants.');
+      return window.location.href = 'index.html';
+    }
+  
+    // ——————————————
+    // 1) Fetch exams
+    // ——————————————
+    const examSelect = document.getElementById('examSelect');
+    fetch('/api/exams/all')
+      .then(r => r.json())
+      .then(exams => {
+        exams.forEach(e => {
+          const opt = document.createElement('option');
+          opt.value = e.examId;
+          opt.textContent = e.title;
+          examSelect.appendChild(opt);
+        });
+      })
+      .catch(err => {
+        console.error('Erreur chargement examens :', err);
+        alert('Impossible de charger la liste des examens');
+      });
+  
+    // ——————————————
+    // 2) Generate question blocks
+    // ——————————————
     const configForm    = document.getElementById('configForm');
     const questionsForm = document.getElementById('questionsForm');
     const container     = document.getElementById('questionsContainer');
-    const examSelect    = document.getElementById('examSelect');
+    let currentExamId;
   
-    let currentExamId = null;
-  
-    // 0) Charger la liste des examens pour le <select>
-    async function loadExams() {
-      try {
-        const res = await fetch('http://localhost:8082/api/exams/exams');
-        if (!res.ok) throw new Error(await res.text());
-        const exams = await res.json();
-        exams.forEach(exam => {
-          const opt = document.createElement('option');
-          opt.value = exam.examId;
-          opt.textContent = exam.title;
-          examSelect.appendChild(opt);
-        });
-      } catch (err) {
-        console.error('Erreur chargement examens :', err);
-        alert('Impossible de charger la liste des examens');
-      }
-    }
-    loadExams();
-  
-    // 1) Générer les blocs de question une fois examen + nombre saisis
     configForm.addEventListener('submit', e => {
       e.preventDefault();
       currentExamId = +examSelect.value;
@@ -40,9 +54,7 @@ document.addEventListener('DOMContentLoaded', () => {
           <label>Question ${i} :</label>
           <textarea id="questionText-${i}"
                     placeholder="Texte de la question ${i}"
-                    rows="2"
-                    required></textarea>
-  
+                    rows="2" required></textarea>
           <div class="choices-container">
             <p>Choix pour question ${i} :</p>
             ${[1,2,3,4].map(j => `
@@ -69,32 +81,34 @@ document.addEventListener('DOMContentLoaded', () => {
       questionsForm.style.display = 'block';
     });
   
-    // 2) Enregistrer questions + choix
+    // ——————————————
+    // 3) Submit questions + choices
+    // ——————————————
     questionsForm.addEventListener('submit', async e => {
       e.preventDefault();
       try {
         for (let i = 1; i <= container.children.length; i++) {
-          // 2.1) Créer la question
-          const text = document
-            .getElementById(`questionText-${i}`)
-            .value.trim();
-  
-          const resQ = await fetch('http://localhost:8082/api/questions/create', {
+          // 3.1) create question
+          const text = document.getElementById(`questionText-${i}`).value.trim();
+          let resQ = await fetch('/api/questions/create', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ text, examId: currentExamId })
+            body: JSON.stringify({
+              text,
+              examId: currentExamId,
+              createdBy: user.userId     // ← send creator
+            })
           });
           if (!resQ.ok) throw new Error(await resQ.text());
           const savedQ = await resQ.json();
           const questionId = savedQ.questionId;
   
-          // 2.2) Créer les 4 choix
+          // 3.2) create 4 choices
           const correctIndex = document.querySelector(`input[name="correct-${i}"]:checked`).value;
           for (let j = 1; j <= 4; j++) {
             const choiceText = document.getElementById(`choice-${i}-${j}`).value.trim();
             const isCorrect  = (parseInt(correctIndex, 10) === j);
-  
-            const resC = await fetch('http://localhost:8082/api/choices/create', {
+            let resC = await fetch('/api/choices/create', {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({ questionId, text: choiceText, isCorrect })
@@ -105,6 +119,7 @@ document.addEventListener('DOMContentLoaded', () => {
   
         alert('Toutes les questions et choix ont été enregistrés !');
         window.location.reload();
+  
       } catch (err) {
         console.error(err);
         alert('Échec : ' + err.message);
