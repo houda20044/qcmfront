@@ -49,7 +49,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     <td>${
                       r.score != null
                         ? r.score.toFixed(2)
-                        : 'N/A'
+                        : 'N/a'
                     }</td>
                   </tr>
                 `).join('')}
