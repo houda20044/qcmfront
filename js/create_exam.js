@@ -29,6 +29,11 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!res.ok) throw new Error(await res.text());
         alert('Examen créé avec succès !');
         form.reset();
+        // Redirect to the "Ajouter des Questions" page, passing the new examId:
+        const locationHeader = res.headers.get('Location');
+        // If you set a Location header with the new exam ID on the back-end,
+        // you can extract it here. Otherwise, use a fixed redirect:
+        window.location.href = 'creer_questions.html';
       } catch (err) {
         console.error(err);
         alert('Erreur: ' + err.message);
