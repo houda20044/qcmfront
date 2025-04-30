@@ -1,0 +1,33 @@
+<!-- src/main/resources/static/admin_dashboard.html -->
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin — Tous les utilisateurs</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="navbar">
+    <div class="container">
+      <div class="logo">QCM+ (Admin)</div>
+      <nav>
+        <a href="index.html">Déconnexion</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="hero">
+    <div class="card">
+      <h2>Liste des utilisateurs</h2>
+      <table class="results-table" id="usersTable">
+        <thead>
+          <tr><th>ID</th><th>Nom</th><th>Email</th><th>Rôle</th></tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </main>
+
+  <script src="js/admin_dashboard.js"></script>
+</body>
+</html>

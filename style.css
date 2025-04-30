@@ -257,3 +257,19 @@ form select:focus {
 .results-table th {
   background-color: #f0f0f0;
 }
+
+/* Reuse .results-table or define a new one for admin */
+.results-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 15px;
+}
+.results-table th,
+.results-table td {
+  border: 1px solid #ccc;
+  padding: 8px;
+  text-align: left;
+}
+.results-table th {
+  background-color: #f0f0f0;
+}

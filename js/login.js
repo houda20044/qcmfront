@@ -22,10 +22,12 @@ document.getElementById("loginForm").addEventListener("submit", function (e) {
       localStorage.setItem("loggedInUser", JSON.stringify(data.user));
 
       // Redirection en fonction du rôle
-      if (data.user.role === "STUDENT") {  
-        window.location.href = "dashboard-etudiant.html"; 
-      } else if (data.user.role === "MENTOR") {  // Assure-toi que les rôles sont bien définis
-        window.location.href = "dashboard-professeur.html"; // Professeur
+      if (data.user.role === "STUDENT") {
+        window.location.href = "dashboard-etudiant.html";
+      } else if (data.user.role === "MENTOR") {
+        window.location.href = "dashboard-professeur.html";
+      } else if (data.user.role === "ADMIN") {    // ← new
+        window.location.href = "admin_dashboard.html"; 
       } else {
         alert("Rôle inconnu !");
       }
